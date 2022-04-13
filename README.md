@@ -42,6 +42,9 @@ class MyComponent extends StreamlitComponentBase {
 $ cd template
 $ python3 -m venv venv  # create venv
 $ . venv/bin/activate   # activate venv
+$ python -m pip install --upgrade pip
+$ pip install cython
+$ pip install wheel
 $ pip install streamlit # install streamlit
 ```
 * Initialize and run the component template frontend:

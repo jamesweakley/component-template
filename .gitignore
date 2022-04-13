@@ -7,7 +7,7 @@ __pycache__/
 *$py.class
 
 # Distribution / packaging
-build/
+#build/
 dist/
 eggs/
 .eggs/
@@ -66,3 +66,4 @@ package-lock.json
 # VSCode
 ########################################################################
 .vscode/
+template/my_component/frontend/venv/**
