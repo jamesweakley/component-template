@@ -46,7 +46,7 @@ const StreamlitAsyncWrapper = (props:StreamlitPropsState) => {
   }
 
   if (props.args["action_results"]){
-    console.log('posting action results')
+    console.log('posting action results',props.args["action_results"])
     parent.postMessage(JSON.parse(props.args["action_results"]))
   }
 

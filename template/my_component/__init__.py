@@ -92,7 +92,7 @@ if 'action' in query_params:
     print('was sent action:'+query_params['action'][0])
     action_request = json.loads(query_params['action'][0])
     time.sleep(5)
-    action_results = {'rows':[1,2,3]}
+    action_results = json.dumps({'rows':[1,2,3]})
     my_component(action_results, key="worker")
 else:
     # Component to be actually rendered
