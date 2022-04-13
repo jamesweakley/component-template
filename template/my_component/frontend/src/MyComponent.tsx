@@ -42,14 +42,14 @@ class MyComponent extends StreamlitComponentBase<State> {
       style.outline = borderStyling
     }
 
-    /*if (queryResults){
+    if (queryResults){
       console.log('posting query results')
       parent.postMessage(queryResults)
     }else{
-      console.log('running query')
-      doQuery('select 1');
+      //
+      //doQuery('select 1');
     }
-    */
+    
 
     // Show a button and some text.
     // When the button is clicked, we'll increment our "numClicks" state
@@ -104,6 +104,7 @@ class MyComponent extends StreamlitComponentBase<State> {
   private onClicked = async (): Promise<void> => {
     // Increment state.numClicks, and pass the new value back to
     // Streamlit via `Streamlit.setComponentValue`.
+    console.log('running query');
     var queryResults = await this.doQuery('select 1');
     this.setState({ myQueryResults: queryResults })
     /*this.setState(
