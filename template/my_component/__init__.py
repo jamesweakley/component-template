@@ -45,7 +45,7 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def my_component(query_results, key=None):
+def my_component(action_results, key=None):
     """Create a new instance of "my_component".
 
     Parameters
@@ -72,7 +72,7 @@ def my_component(query_results, key=None):
     #
     # "default" is a special argument that specifies the initial return
     # value of the component before the user has interacted with it.
-    component_value = _component_func(query_results=query_results, key=key, default=0)
+    component_value = _component_func(action_results=action_results, key=key, default=0)
 
     # We could modify the value returned from the component if we wanted.
     # There's no need to do this in our simple example - but it's an option.
@@ -84,16 +84,16 @@ def my_component(query_results, key=None):
 # app: `$ streamlit run my_component/__init__.py`
 #if not _RELEASE:
 import streamlit as st
-import time
-st.subheader("Component with constant args")
+import time,json
 query_params = st.experimental_get_query_params()
 print(query_params)
-if 'query' in query_params:
+if 'action' in query_params:
     # this is coming from a hidden iframe
-    print('was sent query params')
+    action_request = json.loads(query_params['action'])
+    print('was sent action:'+query_params['action'])
     time.sleep(5)
-    query_results = {'rows':[1,2,3]}
-    my_component(query_results, key="worker")
+    action_results = {'rows':[1,2,3]}
+    my_component(action_results, key="worker")
 else:
     # Component to be actually rendered
     my_component(None, key="interactor")

@@ -1,10 +1,10 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import MyComponent from "./MyComponent"
+import StreamlitAsyncWrapper from "./StreamlitAsyncWrapper"
 
 ReactDOM.render(
   <React.StrictMode>
-    <MyComponent />
+    <StreamlitAsyncWrapper />
   </React.StrictMode>,
   document.getElementById("root")
 )

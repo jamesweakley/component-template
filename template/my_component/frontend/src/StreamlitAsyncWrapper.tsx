@@ -1,6 +1,5 @@
 import {
   Streamlit,
-  StreamlitComponentBase,
   Theme,
   withStreamlitConnection,
 } from "streamlit-component-lib"
@@ -21,7 +20,7 @@ interface StreamlitPropsState {
 }
 declare var parent: any;
 
-const MyComponent = (props:StreamlitPropsState) => {
+const StreamlitAsyncWrapper = (props:StreamlitPropsState) => {
   useEffect(() => {
     Streamlit.setFrameHeight();
   });
@@ -29,7 +28,7 @@ const MyComponent = (props:StreamlitPropsState) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   // Arguments that are passed to the plugin in Python are accessible
   // via `this.props.args`
-  const [queryResults, setQueryResults] = useState<any>(props.args["query_results"]);
+  const [queryResults, setQueryResults] = useState<any>();
 
   const { theme } = props
   const style: React.CSSProperties = {}
@@ -46,17 +45,17 @@ const MyComponent = (props:StreamlitPropsState) => {
     style.outline = borderStyling
   }
 
-  if (queryResults){
-    console.log('posting query results')
-    parent.postMessage(queryResults)
+  if (props.args["action_results"]){
+    console.log('posting action results')
+    parent.postMessage(JSON.parse(props.args["action_results"]))
   }
 
-  const doQuery=async (query:string):Promise<any> => {
+  const doAction=async (action:object):Promise<any> => {
     var iframe:any = document.createElement('iframe');
     const searchUrl=window.location.search;
     const streamlitUrl=decodeURIComponent(searchUrl.replace('?streamlitUrl=',''));
-    console.log('opening component at ',streamlitUrl+'?query='+query)
-    iframe.src = streamlitUrl+'?query='+query;
+    console.log('opening component at ',streamlitUrl+'?action='+JSON.stringify(action));
+    iframe.src = streamlitUrl+'?action='+JSON.stringify(action);
     iframe.style.display = 'none';
     var iframeElement = document.body.appendChild(iframe);
     return new Promise(function(resolve){
@@ -78,7 +77,7 @@ const MyComponent = (props:StreamlitPropsState) => {
     // Streamlit via `Streamlit.setComponentValue`.
     console.log('running query');
     setLoading(true);
-    var queryResults = await doQuery('select 1');
+    var queryResults = await doAction({'query':'select 1'});
     setQueryResults(queryResults);
     setLoading(false);
     /*this.setState(
@@ -133,4 +132,4 @@ const MyComponent = (props:StreamlitPropsState) => {
 // passing arguments from Python -> Component.
 //
 // You don't need to edit withStreamlitConnection (but you're welcome to!).
-export default withStreamlitConnection(MyComponent)
+export default withStreamlitConnection(StreamlitAsyncWrapper)
