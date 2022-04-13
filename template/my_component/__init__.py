@@ -84,15 +84,27 @@ def my_component(action_results, key=None):
 # app: `$ streamlit run my_component/__init__.py`
 #if not _RELEASE:
 import streamlit as st
-import time,json
+import time,json,os
+import snowflake.connector
+
 query_params = st.experimental_get_query_params()
 print(query_params)
 if 'action' in query_params:
     # this is coming from a hidden iframe
     print('was sent action:'+query_params['action'][0])
     action_request = json.loads(query_params['action'][0])
-    time.sleep(5)
-    action_results = json.dumps({'rows':[1,2,3]})
+    conn = snowflake.connector.connect(
+        user=os.getenv('SNOWFLAKE_USER'),
+        password=os.getenv('SNOWFLAKE_PASSWORD'),
+        account=os.getenv('SNOWFLAKE_ACCOUNT'),
+        warehouse=os.getenv('SNOWFLAKE_WAREHOUSE'),
+        database=os.getenv('SNOWFLAKE_DATABASE'),
+        schema=os.getenv('SNOWFLAKE_SCHEMA'),
+        role=os.getenv('SNOWFLAKE_ROLE')
+        )
+    cur = conn.cursor()
+    cur.execute(action_request['query'])
+    action_results = json.dumps(cur.fetchall())
     my_component(action_results, key="worker")
 else:
     # Component to be actually rendered

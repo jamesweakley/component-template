@@ -110,7 +110,7 @@ const StreamlitAsyncWrapper = (props:StreamlitPropsState) => {
       }
       {!isLoading &&
         <div>
-          queryResults: {JSON.stringify(queryResults)}<hr/>
+          action results: {JSON.stringify(queryResults)}<hr/>
         </div>
       }
       <button
@@ -125,7 +125,6 @@ const StreamlitAsyncWrapper = (props:StreamlitPropsState) => {
     </span>
   )
 }
-
 
 // "withStreamlitConnection" is a wrapper function. It bootstraps the
 // connection between your component and the Streamlit app, and handles
