@@ -85,15 +85,17 @@ class MyComponent extends StreamlitComponentBase<State> {
     iframe.src = streamlitUrl+'?query='+query;
     iframe.style.display = 'none';
     var iframeElement = document.body.appendChild(iframe);
-    iframe.contentWindow.addEventListener('message', (e:any) => {
-      const key = e.message ? 'message' : 'data';
-      const data = e[key];
-      console.log('data',data);
-      if (data.isStreamlitMessage===undefined){
-        document.body.removeChild(iframeElement);
-        return data;
-      }
-    },false);
+    return new Promise(function(resolve){
+      iframe.contentWindow.addEventListener('message', (e:any) => {
+        const key = e.message ? 'message' : 'data';
+        const data = e[key];
+        console.log('data',data);
+        if (data.isStreamlitMessage===undefined){
+          document.body.removeChild(iframeElement);
+          resolve(data);
+        }
+      },false);
+  });
 
     //iframe.contentWindow.body.addEventListener('click',() => console.log('click)))
   }
