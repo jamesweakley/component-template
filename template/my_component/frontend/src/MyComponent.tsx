@@ -58,12 +58,6 @@ class MyComponent extends StreamlitComponentBase<State> {
     return (
       <span>
         queryResults: {JSON.stringify(this.state.myQueryResults)}<hr/>
-        {JSON.stringify(window.location)}<hr/>
-        
-        <b>href</b>:{window.location.href}<hr/>
-        <b>origin</b>:{window.location.origin}
-        <hr/>
-        Hello, {name}! &nbsp;
         <button
           style={style}
           onClick={this.onClicked}
@@ -71,7 +65,7 @@ class MyComponent extends StreamlitComponentBase<State> {
           onFocus={this._onFocus}
           onBlur={this._onBlur}
         >
-          Click Me!
+          Run query!
         </button>
       </span>
     )

@@ -45,7 +45,7 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def my_component(name, query_results, key=None):
+def my_component(query_results, key=None):
     """Create a new instance of "my_component".
 
     Parameters
@@ -72,7 +72,7 @@ def my_component(name, query_results, key=None):
     #
     # "default" is a special argument that specifies the initial return
     # value of the component before the user has interacted with it.
-    component_value = _component_func(name=name, query_results=query_results, key=key, default=0)
+    component_value = _component_func(query_results=query_results, key=key, default=0)
 
     # We could modify the value returned from the component if we wanted.
     # There's no need to do this in our simple example - but it's an option.
@@ -89,28 +89,10 @@ st.subheader("Component with constant args")
 query_params = st.experimental_get_query_params()
 print(query_params)
 if 'query' in query_params:
+    # this is coming from a hidden iframe
     print('was sent query params')
     query_results = {'rows':[1,2,3]}
-    my_component('worker', query_results, key="results")
+    my_component(query_results, key="worker")
 else:
-    # Create an instance of our component with a constant `name` arg, and
-    # print its output value.
-    #num_clicks = my_component("World")
-    #st.markdown("You've clicked %s times!" % int(num_clicks))
-
-    #st.markdown("---")
-    st.subheader("Component with variable args")
-    #time.sleep(10)
-    # Create a second instance of our component whose `name` arg will vary
-    # based on a text_input widget.
-    #
-    # We use the special "key" argument to assign a fixed identity to this
-    # component instance. By default, when a component's arguments change,
-    # it is considered a new instance and will be re-mounted on the frontend
-    # and lose its current state. In this case, we want to vary the component's
-    # "name" argument without having it get recreated.
-    name_input = st.text_input("Enter a name", value="Streamlit")
-    num_clicks = my_component('interactor', None, key="foo")
-    st.markdown("You've clicked %s times!" % int(num_clicks))
-
-    st.markdown(query_params)
+    # Component to be actually rendered
+    my_component(None, key="interactor")
