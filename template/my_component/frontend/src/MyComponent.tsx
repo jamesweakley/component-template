@@ -3,13 +3,13 @@ import {
   StreamlitComponentBase,
   withStreamlitConnection,
 } from "streamlit-component-lib"
-import React, { ReactNode } from "react"
+import React, { ReactNode, useEffect } from "react"
 
 interface State {
   numClicks: number
   isFocused: boolean
 }
-
+declare var parent: any;
 /**
  * This is a React-based component template. The `render()` function is called
  * automatically when your component should be re-rendered.
@@ -17,10 +17,14 @@ interface State {
 class MyComponent extends StreamlitComponentBase<State> {
   public state = { numClicks: 0, isFocused: false }
 
+  
+
   public render = (): ReactNode => {
+    
     // Arguments that are passed to the plugin in Python are accessible
     // via `this.props.args`. Here, we access the "name" arg.
     const name = this.props.args["name"]
+    const queryResults = this.props.args["query_results"]
 
     // Streamlit sends us a theme object via props that we can use to ensure
     // that our component has visuals that match the active theme in a
@@ -39,6 +43,32 @@ class MyComponent extends StreamlitComponentBase<State> {
       style.border = borderStyling
       style.outline = borderStyling
     }
+    
+    
+    const doQuery=(query:string) => {
+      var iframe:any = document.createElement('iframe');
+      console.log('opening component at ',window.location.origin+'?query='+query)
+      iframe.src = window.location.origin+'?query='+query;
+      //iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      iframe.contentWindow.addEventListener('message', (e:any) => {
+        const key = e.message ? 'message' : 'data';
+        const data = e[key];
+        console.log('data',data);
+      },false);
+
+      //iframe.contentWindow.body.addEventListener('click',() => console.log('click)))
+    }
+
+    if (queryResults){
+      console.log('posting query results')
+      parent.postMessage("Hello",queryResults)
+    }else{
+      console.log('running query')
+      doQuery('select 1');
+    }
+    
+  
 
     // Show a button and some text.
     // When the button is clicked, we'll increment our "numClicks" state
@@ -46,6 +76,12 @@ class MyComponent extends StreamlitComponentBase<State> {
     // be available to the Python program.
     return (
       <span>
+        queryResults: {JSON.stringify(queryResults)}<hr/>
+        {JSON.stringify(window.location)}<hr/>
+        
+        <b>href</b>:{window.location.href}<hr/>
+        <b>origin</b>:{window.location.origin}
+        <hr/>
         Hello, {name}! &nbsp;
         <button
           style={style}
