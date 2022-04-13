@@ -84,7 +84,7 @@ def my_component(name, key=None):
 # app: `$ streamlit run my_component/__init__.py`
 #if not _RELEASE:
 import streamlit as st
-
+import time
 st.subheader("Component with constant args")
 
 # Create an instance of our component with a constant `name` arg, and
@@ -94,7 +94,7 @@ st.markdown("You've clicked %s times!" % int(num_clicks))
 
 st.markdown("---")
 st.subheader("Component with variable args")
-
+time.sleep(10)
 # Create a second instance of our component whose `name` arg will vary
 # based on a text_input widget.
 #
