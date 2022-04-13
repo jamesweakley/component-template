@@ -6,7 +6,7 @@ import {
 } from "streamlit-component-lib"
 import React, { ReactNode, useEffect, useState } from "react"
 
-interface State {
+interface StreamlitPropsState {
   args: any;
   /** The component's width. */
   width: number;
@@ -20,21 +20,16 @@ interface State {
   theme?: Theme;
 }
 declare var parent: any;
-/**
- * This is a React-based component template. The `render()` function is called
- * automatically when your component should be re-rendered.
- */
-const MyComponent = (props:State) => {
+
+const MyComponent = (props:StreamlitPropsState) => {
   useEffect(() => {
     Streamlit.setFrameHeight();
   });
   const [isFocused, setFocused] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
   // Arguments that are passed to the plugin in Python are accessible
   // via `this.props.args`
   const [queryResults, setQueryResults] = useState<any>(props.args["query_results"]);
-    
-//class MyComponent extends StreamlitComponentBase<State> {
-  //public state = { myQueryResults: {}, isFocused: false }
 
   const { theme } = props
   const style: React.CSSProperties = {}
@@ -74,9 +69,7 @@ const MyComponent = (props:State) => {
           resolve(data);
         }
       },false);
-  });
-
-    //iframe.contentWindow.body.addEventListener('click',() => console.log('click)))
+    });
   }
 
   /** Click handler for our "Click Me!" button. */
@@ -84,8 +77,10 @@ const MyComponent = (props:State) => {
     // Increment state.numClicks, and pass the new value back to
     // Streamlit via `Streamlit.setComponentValue`.
     console.log('running query');
+    setLoading(true);
     var queryResults = await doQuery('select 1');
     setQueryResults(queryResults);
+    setLoading(false);
     /*this.setState(
       prevState => ({ numClicks: prevState.numClicks + 1 }),
       () => Streamlit.setComponentValue(this.state.numClicks)
@@ -109,7 +104,16 @@ const MyComponent = (props:State) => {
   // be available to the Python program.
   return (
     <span>
-      queryResults: {JSON.stringify(queryResults)}<hr/>
+      {isLoading &&
+        <div>
+          Loading...
+        </div>
+      }
+      {!isLoading &&
+        <div>
+          queryResults: {JSON.stringify(queryResults)}<hr/>
+        </div>
+      }
       <button
         style={style}
         onClick={onClicked}

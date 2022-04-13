@@ -91,6 +91,7 @@ print(query_params)
 if 'query' in query_params:
     # this is coming from a hidden iframe
     print('was sent query params')
+    time.sleep(5)
     query_results = {'rows':[1,2,3]}
     my_component(query_results, key="worker")
 else:
