@@ -6,7 +6,7 @@ import {
 import React, { ReactNode, useEffect } from "react"
 
 interface State {
-  numClicks: number
+  myQueryResults: any
   isFocused: boolean
 }
 declare var parent: any;
@@ -15,9 +15,7 @@ declare var parent: any;
  * automatically when your component should be re-rendered.
  */
 class MyComponent extends StreamlitComponentBase<State> {
-  public state = { numClicks: 0, isFocused: false }
-
-  
+  public state = { myQueryResults: {}, isFocused: false }
 
   public render = (): ReactNode => {
     
@@ -43,34 +41,15 @@ class MyComponent extends StreamlitComponentBase<State> {
       style.border = borderStyling
       style.outline = borderStyling
     }
-    
-    
-    const doQuery=(query:string) => {
-      var iframe:any = document.createElement('iframe');
-      const searchUrl=window.location.search;
-      const streamlitUrl=decodeURIComponent(searchUrl.replace('?streamlitUrl=',''));
-      console.log('opening component at ',streamlitUrl+'?query='+query)
-      iframe.src = streamlitUrl+'?query='+query;
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-      iframe.contentWindow.addEventListener('message', (e:any) => {
-        const key = e.message ? 'message' : 'data';
-        const data = e[key];
-        console.log('data',data);
-      },false);
 
-      //iframe.contentWindow.body.addEventListener('click',() => console.log('click)))
-    }
-
-    if (queryResults){
+    /*if (queryResults){
       console.log('posting query results')
       parent.postMessage(queryResults)
     }else{
       console.log('running query')
       doQuery('select 1');
     }
-    
-  
+    */
 
     // Show a button and some text.
     // When the button is clicked, we'll increment our "numClicks" state
@@ -78,7 +57,7 @@ class MyComponent extends StreamlitComponentBase<State> {
     // be available to the Python program.
     return (
       <span>
-        queryResults: {JSON.stringify(queryResults)}<hr/>
+        queryResults: {JSON.stringify(this.state.myQueryResults)}<hr/>
         {JSON.stringify(window.location)}<hr/>
         
         <b>href</b>:{window.location.href}<hr/>
@@ -98,14 +77,37 @@ class MyComponent extends StreamlitComponentBase<State> {
     )
   }
 
+  private doQuery=async (query:string):Promise<any> => {
+    var iframe:any = document.createElement('iframe');
+    const searchUrl=window.location.search;
+    const streamlitUrl=decodeURIComponent(searchUrl.replace('?streamlitUrl=',''));
+    console.log('opening component at ',streamlitUrl+'?query='+query)
+    iframe.src = streamlitUrl+'?query='+query;
+    iframe.style.display = 'none';
+    var iframeElement = document.body.appendChild(iframe);
+    iframe.contentWindow.addEventListener('message', (e:any) => {
+      const key = e.message ? 'message' : 'data';
+      const data = e[key];
+      console.log('data',data);
+      if (data.isStreamlitMessage===undefined){
+        document.body.removeChild(iframeElement);
+        return data;
+      }
+    },false);
+
+    //iframe.contentWindow.body.addEventListener('click',() => console.log('click)))
+  }
+
   /** Click handler for our "Click Me!" button. */
-  private onClicked = (): void => {
+  private onClicked = async (): Promise<void> => {
     // Increment state.numClicks, and pass the new value back to
     // Streamlit via `Streamlit.setComponentValue`.
-    this.setState(
+    var queryResults = await this.doQuery('select 1');
+    this.setState({ myQueryResults: queryResults })
+    /*this.setState(
       prevState => ({ numClicks: prevState.numClicks + 1 }),
       () => Streamlit.setComponentValue(this.state.numClicks)
-    )
+    )*/
   }
 
   /** Focus handler for our "Click Me!" button. */
