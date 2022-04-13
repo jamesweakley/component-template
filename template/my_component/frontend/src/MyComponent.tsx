@@ -64,7 +64,7 @@ class MyComponent extends StreamlitComponentBase<State> {
 
     if (queryResults){
       console.log('posting query results')
-      parent.postMessage("Hello",queryResults)
+      parent.postMessage(queryResults)
     }else{
       console.log('running query')
       doQuery('select 1');
