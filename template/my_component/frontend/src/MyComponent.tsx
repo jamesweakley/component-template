@@ -47,8 +47,10 @@ class MyComponent extends StreamlitComponentBase<State> {
     
     const doQuery=(query:string) => {
       var iframe:any = document.createElement('iframe');
-      console.log('opening component at ',window.location.origin+'?query='+query)
-      iframe.src = window.location.origin+'?query='+query;
+      const searchUrl=window.location.search;
+      const streamlitUrl=decodeURIComponent(searchUrl.replace('?streamlitUrl=',''));
+      console.log('opening component at ',streamlitUrl+'?query='+query)
+      iframe.src = streamlitUrl+'?query='+query;
       //iframe.style.display = 'none';
       document.body.appendChild(iframe);
       iframe.contentWindow.addEventListener('message', (e:any) => {
