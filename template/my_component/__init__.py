@@ -89,8 +89,8 @@ query_params = st.experimental_get_query_params()
 print(query_params)
 if 'action' in query_params:
     # this is coming from a hidden iframe
-    action_request = json.loads(query_params['action'])
     print('was sent action:'+query_params['action'])
+    action_request = json.loads(query_params['action'])
     time.sleep(5)
     action_results = {'rows':[1,2,3]}
     my_component(action_results, key="worker")
