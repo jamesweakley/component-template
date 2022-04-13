@@ -51,7 +51,7 @@ class MyComponent extends StreamlitComponentBase<State> {
       const streamlitUrl=decodeURIComponent(searchUrl.replace('?streamlitUrl=',''));
       console.log('opening component at ',streamlitUrl+'?query='+query)
       iframe.src = streamlitUrl+'?query='+query;
-      //iframe.style.display = 'none';
+      iframe.style.display = 'none';
       document.body.appendChild(iframe);
       iframe.contentWindow.addEventListener('message', (e:any) => {
         const key = e.message ? 'message' : 'data';
